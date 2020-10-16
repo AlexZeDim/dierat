@@ -2,7 +2,7 @@ require('dotenv').config();
 const Discord = require('discord.js');
 const client = new Discord.Client();
 
-client.once('create', () => {
+client.once('ready', () => {
     client.guilds.cache.forEach(async guild => {
         let parent_category = guild.channels.cache.find(ch => ch.name === 'Рейд')
         if (!parent_category) {
@@ -27,13 +27,13 @@ client.once('create', () => {
                 }
             } else if (!oldState.channelID && newState.channelID) {
                 /** JOIN EVENT */
-                if (newState.channel.parentID === parent_category.id && newState.channel.members.size === 1) {
+                if (newState.channel.parentID === parent_category.id && newState.channel.members.size > 0) {
                     /** create new voice in category */
-                    voice = await guild.channels.create(`Группа`, {
+                    let sub_voice = await guild.channels.create(`Группа`, {
                         type: 'voice'
                     })
                     /** attach to parent */
-                    await voice.setParent(parent_category.id);
+                    await sub_voice.setParent(parent_category.id);
                 }
             } else {
                 /** JUMP EVENT */
