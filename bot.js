@@ -27,7 +27,7 @@ client.once('ready', () => {
                 }
             } else if (!oldState.channelID && newState.channelID) {
                 /** JOIN EVENT */
-                if (newState.channel.parentID === parent_category.id && newState.channel.members.size > 0) {
+                if (newState.channel.parentID === parent_category.id && newState.channel.members.size === 1) {
                     /** create new voice in category */
                     let sub_voice = await guild.channels.create(`Группа`, {
                         type: 'voice'
@@ -39,6 +39,14 @@ client.once('ready', () => {
                 /** JUMP EVENT */
                 if (oldState.channel.members.size === 0 && oldState.channel.parentID === parent_category.id && parent_category.children.size > 1) {
                     await oldState.channel.delete('Delete administrative channel')
+                }
+                if (newState.channel.members.size === 1 && newState.channel.parentID === parent_category.id) {
+                    /** create new voice in category */
+                    let sub_voice = await guild.channels.create(`Группа`, {
+                        type: 'voice'
+                    })
+                    /** attach to parent */
+                    await sub_voice.setParent(parent_category.id);
                 }
             }
         })
